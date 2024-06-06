@@ -94,8 +94,7 @@ def get_foreground(img, bboxes, patch_size):
             tmp_set = list()
             for j in range(img.shape[0]):  # temporal patches
                 cur_patch = cur_patch_set[j]
-                cur_patch = cv2.resize(np.transpose(cur_patch, [1, 2, 0]),
-                                       (patch_size, patch_size))
+                cur_patch = cv2.resize(np.transpose(cur_patch, [1, 2, 0]), (patch_size, patch_size))
                 tmp_set.append(np.transpose(cur_patch, [2, 0, 1]))
             cur_cube = np.array(tmp_set)  # spatial-temporal cube for each bbox
             img_patches.append(cur_cube)  # all spatial-temporal cubes in a single frame
@@ -306,6 +305,179 @@ class ped_dataset(common_dataset):
             img_batch = torch.from_numpy(img_batch)  # [num_bboxes,frames_num,C,patch_size, patch_size]
 
             return img_batch, torch.zeros(1)
+        
+        elif self.mode == "test":
+            frame_range = self._context_range(indice=indice)
+            img_batch = []
+            for idx in frame_range:
+                cur_img = np.transpose(get_inputs(self.all_frame_addr[idx]), [2, 0, 1])  # [3,h,w]
+                img_batch.append(cur_img)
+            img_batch = np.array(img_batch)
+            
+            if self.all_bboxes is not None:
+                img_batch = get_foreground(img=img_batch, bboxes=self.all_bboxes[indice], patch_size=self.patch_size)
+            
+            img_batch = torch.from_numpy(img_batch)
+            
+            if self.return_gt:
+                gt_batch = cv2.imread(self.all_gt_addr[indice], cv2.IMREAD_GRAYSCALE)
+                gt_batch = torch.from_numpy(gt_batch)
+                
+            
+            if self.return_gt:
+                # img_batch [num_bboxes,frames_num,C,patch_size, patch_size]
+                # gt_batch[h,w]
+                return img_batch, gt_batch
+            else:
+                return img_batch, torch.zeros(1)  # to unify the interface
+        else:
+            raise NotImplementedError
+
+
+class CarlaDataset(common_dataset):
+    def __init__(self, mode='train', context_frame_num=0, border_mode="hard", file_format='.png', all_bboxes=None, patch_size=32, of_dataset=False):
+        super(CarlaDataset, self).__init__()
+        self.mode = mode
+        self.videos = OrderedDict()
+        self.all_frame_addr = []
+        self.frame_video_idx = []
+        self.tot_frame_num = 0
+        self.all_bboxes = all_bboxes
+        self.patch_size =patch_size
+        self.of_dataset = of_dataset
+        self.context_frame_num = context_frame_num
+        self.border_mode = border_mode
+        self.file_format = file_format
+        self.return_gt = False
+        if mode == 'test':
+            self.all_gt_addr = list()
+            self.gts = OrderedDict()
+        self._dataset_init()
+
+    def __len__(self):
+        return self.tot_frame_num
+
+    def _dataset_init(self):
+        if self.mode =='train':
+            if self.of_dataset:
+                self.data_dir = 'path'
+                data_split = 'training' if self.mode == 'train' else 'testing'
+                data_path = os.path.join(self.data_dir, data_split)
+            else:
+                 self.data_dir = 'path'
+                 data_path = os.path.join(self.data_dir)
+            town_dirs = glob.glob(os.path.join(data_path, 'Town*'))
+            city_idx = 1
+            image_count = 0  
+
+            for town_dir in sorted(town_dirs):  
+                
+                town_name = os.path.basename(town_dir)
+                scenario_dirs = glob.glob(os.path.join(town_dir, '*'))
+                for scenario_dir in sorted(scenario_dirs):
+                    scenario_name = os.path.basename(scenario_dir)
+                    if scenario_name.isdigit():
+                        image_path_pattern = os.path.join(scenario_dir, 'image', 'image*' + self.file_format)
+                        frame_paths = sorted(glob.glob(image_path_pattern))
+                        image_count += len(frame_paths)  # Update the counter
+                        town_info = {
+                            'path': image_path_pattern,
+                            'frames': frame_paths,
+                            'length': len(frame_paths)
+                        }
+                        self.videos[town_name + '/' + scenario_name] = town_info
+                        self.frame_video_idx += [city_idx] * town_info['length']
+                        city_idx += 1
+
+            for town_info in self.videos.values():
+                self.all_frame_addr.extend(town_info['frames'])
+            self.tot_frame_num = len(self.all_frame_addr)
+            
+        if self.mode =='test':
+            if self.of_dataset:
+                data_dir = 'Path_To_Testing_Frames'
+                gt_path = 'Path_To_GT_Testing_Frames'
+
+                video_dir_list = sorted([dir for dir in glob.glob(os.path.join(data_dir, '00*'))])
+                gt_dir_list = [os.path.join(gt_path, f'{i:04d}', 'ground-truth') for i in range(1, 13)]
+
+                idx = 1
+                for video_dir in video_dir_list:
+                    video_name = os.path.basename(video_dir)
+                    self.videos[video_name] = {}
+                    self.videos[video_name]['path'] = video_dir
+                    self.videos[video_name]['frame'] = sorted(glob.glob(os.path.join(video_dir, 'RGB_IMG', '*' + self.file_format)))
+                    self.videos[video_name]['length'] = len(self.videos[video_name]['frame'])
+                    self.frame_video_idx += [idx] * self.videos[video_name]['length']
+                    idx += 1
+
+                # merge different frames of different videos into one list
+                for _, cont in self.videos.items():
+                    self.all_frame_addr += cont['frame']
+                self.tot_frame_num = len(self.all_frame_addr)
+                if gt_dir_list:
+                    self.return_gt = True
+                    for gt_dir in gt_dir_list:
+                        gt_name = os.path.basename(gt_dir).replace('ground-truth', 'GT')
+                        self.gts[gt_name] = {}
+                        self.gts[gt_name]['gt_frame'] = sorted(glob.glob(os.path.join(gt_dir, '*.png')))
+                    # Merge different frames of different videos into one list
+                        for _, cont in self.gts.items():
+                            self.all_gt_addr.extend(cont['gt_frame'])  # Use extend to merge lists
+
+            if not self.of_dataset and self.mode =='test':
+                
+               # self.data_dir = '/media/kiglis_local/53E9-5477/HighwayBad'
+                self.data_dir = '/media/kiglis_local/53E9-5477/vanishing_data/testing'
+
+                data_path = os.path.join(self.data_dir)
+                    
+                video_dir_list = sorted([dir for dir in glob.glob(os.path.join(data_path, '00*'))])                
+                gt_dir_list = [os.path.join(video_dir, 'ground-truth') for video_dir in video_dir_list]
+                
+                idx = 1
+                for video_dir in video_dir_list:
+                    video_name = os.path.basename(video_dir)
+                    self.videos[video_name] = {}
+                    self.videos[video_name]['path'] = video_dir
+                    self.videos[video_name]['frame'] = sorted(glob.glob(os.path.join(video_dir, 'RGB_IMG', '*' + self.file_format)))
+                    self.videos[video_name]['length'] = len(self.videos[video_name]['frame'])
+                    self.frame_video_idx += [idx] * self.videos[video_name]['length']
+                    idx += 1
+
+                # merge different frames of different videos into one list
+                for _, cont in self.videos.items():
+                    self.all_frame_addr += cont['frame']
+                self.tot_frame_num = len(self.all_frame_addr)
+                if gt_dir_list:
+                    self.return_gt = True
+                    for gt_dir in gt_dir_list:
+                        gt_name = os.path.basename(gt_dir).replace('ground-truth', 'GT')
+                        self.gts[gt_name] = {}
+                        self.gts[gt_name]['gt_frame'] = sorted(glob.glob(os.path.join(gt_dir, '*' + self.file_format)))
+
+                    # Merge different frames of different videos into one list
+                        for _, cont in self.gts.items():
+                            self.all_gt_addr.extend(cont['gt_frame'])  # Use extend to merge lists
+
+
+    def __getitem__(self, indice):
+        if self.mode == "train":
+            # frame indices in a clip
+
+            frame_range = self._context_range(indice=indice)
+            img_batch = []
+            for idx in frame_range:
+                # [h,w,c] -> [c,h,w] BGR
+                cur_img = np.transpose(get_inputs(self.all_frame_addr[idx]), [2, 0, 1])
+                img_batch.append(cur_img)
+            img_batch = np.array(img_batch)
+
+            if self.all_bboxes is not None:
+                img_batch = get_foreground(img=img_batch, bboxes=self.all_bboxes[indice], patch_size=self.patch_size)
+            img_batch = torch.from_numpy(img_batch)  # [num_bboxes,frames_num,C,patch_size, patch_size]
+
+            return img_batch, torch.zeros(1)
 
         elif self.mode == "test":
             frame_range = self._context_range(indice=indice)
@@ -314,13 +486,17 @@ class ped_dataset(common_dataset):
                 cur_img = np.transpose(get_inputs(self.all_frame_addr[idx]), [2, 0, 1])  # [3,h,w]
                 img_batch.append(cur_img)
             img_batch = np.array(img_batch)
+            
             if self.all_bboxes is not None:
                 img_batch = get_foreground(img=img_batch, bboxes=self.all_bboxes[indice], patch_size=self.patch_size)
+            
             img_batch = torch.from_numpy(img_batch)
-
+            
             if self.return_gt:
                 gt_batch = cv2.imread(self.all_gt_addr[indice], cv2.IMREAD_GRAYSCALE)
                 gt_batch = torch.from_numpy(gt_batch)
+                
+    
             if self.return_gt:
                 # img_batch [num_bboxes,frames_num,C,patch_size, patch_size]
                 # gt_batch[h,w]
@@ -643,7 +819,7 @@ class shanghaiTech_dataset(Dataset):
             img_batch = torch.from_numpy(img_batch)
 
             return img_batch, torch.zeros(1)  # to unify the interface
-
+        
         elif self.mode == 'test':
             frame_range = self._context_range(indice=indice)
             img_batch = []
@@ -665,12 +841,14 @@ class shanghaiTech_dataset(Dataset):
                 return img_batch, torch.zeros(1)  # to unify the interface
         else:
             raise NotImplementedError
+        
+
 
 
 def get_dataset(dataset_name, dir, mode='train', context_frame_num=0, border_mode='hard',
                 all_bboxes=None, patch_size=32, of_dataset=False):
     if not of_dataset:
-        img_ext = {"ped2": ".tif", "avenue": ".jpg", "shanghaitech": ".jpg"}[dataset_name]
+        img_ext = {"ped2": ".tif", "avenue": ".jpg", "shanghaitech": ".jpg", "carla_local" : ".png"}[dataset_name]
     else:
         img_ext = ".npy"
 
@@ -686,6 +864,15 @@ def get_dataset(dataset_name, dir, mode='train', context_frame_num=0, border_mod
         dataset = shanghaiTech_dataset(dir=dir, context_frame_num=context_frame_num, mode=mode, border_mode=border_mode,
                                        all_bboxes=all_bboxes, patch_size=patch_size, file_format=img_ext,
                                        of_dataset=of_dataset)
+    elif dataset_name == 'carla_local':
+        dataset = CarlaDataset(
+                    mode=mode,
+                    context_frame_num=context_frame_num,
+                    border_mode=border_mode,
+                    all_bboxes=all_bboxes,
+                    patch_size=patch_size,
+                    file_format=img_ext,
+                    of_dataset = of_dataset)
     else:
         raise NotImplementedError
 

@@ -14,8 +14,10 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
         num_samples_each_chunk = 200000 if mode == "test" else 20000
     elif dataset_name == "shanghaitech":
         num_samples_each_chunk = 300000 if mode == "test" else 100000
+    elif dataset_name == "carla_local":
+        num_samples_each_chunk = 20000
     else:
-        raise NotImplementedError("dataset name should be one of ped2,avenue or shanghaitech!")
+        raise NotImplementedError("dataset name should be one of ped2,carla_local, avenue or shanghaitech!")
 
     # frames dataset
     dataset = get_dataset(
@@ -33,8 +35,7 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
         context_frame_num=4, mode=mode,
         border_mode="predict", all_bboxes=all_bboxes,
         patch_size=32,
-        of_dataset=True)
-
+        of_dataset=True)    
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
 
@@ -42,13 +43,11 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
     cnt = 0
     chunk_id = 0  # chunk file id
     chunked_samples = dict(sample_id=[], appearance=[], motion=[], bbox=[], pred_frame=[])
-
     for idx in range(len(dataset)):
-        if idx % 1000 == 0:
+        if idx % 100 == 0:
             print('Extracting foreground in {}-th frame, {} in total'.format(idx + 1, len(dataset)))
 
         frameRange = dataset._context_range(idx)
-
         # [num_bboxes,clip_len,C,patch_size, patch_size]
         batch, _ = dataset.__getitem__(idx)
         flow_batch, _ = flow_dataset.__getitem__(idx)
@@ -98,16 +97,16 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--proj_root", type=str, default="/home/liuzhian/hdd4T/code/hf2vad", help='project root path')
-    parser.add_argument("--dataset_name", type=str, default="ped2", help='dataset name')
-    parser.add_argument("--mode", type=str, default="train", help='train or test data')
+    parser.add_argument("--proj_root", type=str, default="Path", help='project root path')
+    parser.add_argument("--dataset_name", type=str, default="carla_local", help='dataset name')
+    parser.add_argument("--mode", type=str, default="test", help='train or test data')
 
     args = parser.parse_args()
 
-    all_bboxes = np.load(
-        os.path.join(args.proj_root, "data", args.dataset_name, '%s_bboxes_%s.npy' % (args.dataset_name, args.mode)),
-        allow_pickle=True
-    )
+
+
+    all_bboxes = np.load('data/carla_local/bounding_boxes/carla_final_test_bboxes.npy', allow_pickle=True)
+
     if args.mode == "train":
         save_dir = os.path.join(args.proj_root, "data", args.dataset_name, "training", "chunked_samples")
     else:

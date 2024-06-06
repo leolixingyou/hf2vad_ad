@@ -18,8 +18,8 @@ model_paras:
 
 device: cuda:0
 dataset_base_dir: ./data
-dataset_name: ped2
-exp_name: ped2_ML_MemAE_SC_CVAE
+dataset_name: carla_local
+exp_name: carla_local_CVAE_f4l16
 ckpt_root: ./ckpt
 log_root: ./log
 eval_root: ./eval

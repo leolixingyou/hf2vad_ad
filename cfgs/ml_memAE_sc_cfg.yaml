@@ -10,8 +10,8 @@ model_paras:
 
 # exp settings
 dataset_base_dir: ./data
-dataset_name: ped2
-exp_name: ped2_ML_MemAE_SC
+dataset_name: carla_local
+exp_name: carla_local
 ckpt_root: ./ckpt
 log_root: ./log
 eval_root: ./eval

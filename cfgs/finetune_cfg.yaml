@@ -19,11 +19,11 @@ model_paras:
 
 device: cuda:0
 dataset_base_dir: ./data
-dataset_name: ped2
-exp_name: ped2_ML_MemAE_SC_CVAE_finetune
-ckpt_root: ./ckpt
-log_root: ./log
-eval_root: ./eval
+dataset_name: carla_local
+exp_name: carla_local_ML_MemAE_SC_f4l16
+ckpt_root: ckpt
+log_root: log
+eval_root: eval
 
 ML_MemAE_SC_pretrained: False
 pretrained: ./ckpt/ped2_ML_MemAE_SC_CVAE/best.pth
@@ -53,6 +53,8 @@ lam_grad: 1.0
 lam_sparse: 0.0002
 # lambda for flow recon. loss
 lam_recon: 1.0
+w_r: 0.1
+w_p: 10
 
-w_r: 1.0
-w_p: 0.1
+w_r_p: 0.1
+w_p_p: 10
