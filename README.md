@@ -46,7 +46,7 @@ $ python eval.py \
          --model_save_path=./pretrained_ckpts/carla_local_best.pth \
          --cfg_file=./pretrained_ckpts/carla_local_best.yaml
 ```
-You can download the pretrained weights of HF2VAD-AD for Carla_Local datasets 
+You can download the pretrained weights of HF2VAD-AD for the Carla dataset 
 from [here](https://drive.google.com/file/d/1q9yXnHrMNK8qut8nn_mWiVd1HGBoGd-F/view?usp=sharing), the training stats from [here](https://drive.google.com/file/d/1JuxBioxPyhB5b2g82IwQ77WbY22lR0GZ/view?usp=drive_link)  the config from [here](https://drive.google.com/file/d/1tGI5_Us5Wr24K5-TSmSMykV3BOjgMlSU/view?usp=sharing)
 
 ## Acknowledgment
