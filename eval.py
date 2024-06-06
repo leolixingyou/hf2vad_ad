@@ -270,7 +270,7 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, training_stats_pat
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_save_path", type=str,
-                        default="/media/kiglis_local/53E9-5477/finetune/carla_local_ML_MemAE_SC_with_follower_data_ckpt/best.pth",
+                        default="Model_Path",
                         help='path to pretrained weights')
     parser.add_argument("--cfg_file", type=str,
                         default="cfgs/finetune_cfg.yaml",

@@ -224,7 +224,7 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
 
 
 if __name__ == '__main__':
-    model_save_path = "/media/kiglis_local/53E9-5477/MLMemeSC/best.pth"
+    model_save_path = "Model_Path"
     cfg_file = "cfgs/ml_memAE_sc_cfg.yaml"
 
     config = yaml.safe_load(open(cfg_file))

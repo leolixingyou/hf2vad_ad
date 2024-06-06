@@ -427,8 +427,7 @@ class CarlaDataset(common_dataset):
 
             if not self.of_dataset and self.mode =='test':
                 
-               # self.data_dir = '/media/kiglis_local/53E9-5477/HighwayBad'
-                self.data_dir = '/media/kiglis_local/53E9-5477/vanishing_data/testing'
+                self.data_dir = 'Path_To_Data'
 
                 data_path = os.path.join(self.data_dir)
                     
