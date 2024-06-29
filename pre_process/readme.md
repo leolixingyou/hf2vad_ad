@@ -4,7 +4,7 @@
 ### 0. Dataset preparing
 Here we use the `carla` dataset as example. For the other datasets (ped2, Avenue, ShanghaiTech) follow the original instructions.
 
-Download the [Temporal Anomaly (Sudden Braking) Dataset](https://zenodo.org/records/12269929/) and place it into 
+Download the [Temporal Anomaly (Sudden Braking) Dataset](https://zenodo.org/records/12269929) and place it into 
 the `data` directory of this project. In order to evaluate the frame-level AUC, we provide the 
 frame labels of each test video in `data/carla_local/ground_truth_demo/gt_label.json`. 
 
