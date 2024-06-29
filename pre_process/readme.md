@@ -80,11 +80,11 @@ $ python extract_samples.py [--proj_root] [--dataset_name] [--mode]
 ```
 E.g., to extract samples of all training data:
 ```python
-$ python extract_samples.py --proj_root=<path/to/project_root> --dataset_name=ped2 --mode=train
+$ python extract_samples.py --proj_root=<path/to/project_root> --dataset_name=carla_local --mode=train
 ```
 To extract samples of all test data:
 ```python
-$ python extract_samples.py --proj_root=<path/to/project_root> --dataset_name=ped2 --mode=test
+$ python extract_samples.py --proj_root=<path/to/project_root> --dataset_name=carla_local --mode=test
 ```
 Note that the extracted samples number will be very large for Avenue and ShanghaiTech dataset,
 hence we save the samples in a chunked file manner. The max number of samples in a separate
