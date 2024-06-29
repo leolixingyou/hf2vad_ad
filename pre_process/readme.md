@@ -69,7 +69,7 @@ The final data structure should be similar as follows:
 ```python
 ```
 ### 3. Prefetch spatial-temporal cubes
-For every extracted object above, we can construct a spatial-temporal cube (STC). These STCs can be also downloaded from [here](https://zenodo.org/records/12269929/)
+For every extracted object above, we can construct a spatial-temporal cube (STC). These STCs can be also downloaded from [here](https://zenodo.org/records/12269929/).
 For example, assume we extract only one bbox in $i$-th frame, then we can crop the same region
 from $(i-4), (i-3), (i-2), (i-1), i$ frames using the coordinates of that bbox, resulting a STC 
 with shape `[5,3,H,W]`. Things are similar for the optical flows.
