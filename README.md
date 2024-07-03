@@ -15,7 +15,7 @@ tensorboardX==2.4
 ```
 ## 2. Usage
 ### 2.1 Data preparation
-Please follow the [instructions]([https://github.com/daniel-bogdoll/hf2vad_ad/blob/master/README.md](https://github.com/daniel-bogdoll/hf2vad_ad/blob/master/pre_process/readme.md)) to prepare the training and testing dataset.
+Please follow the [instructions](https://github.com/daniel-bogdoll/hf2vad_ad/blob/master/pre_process/readme.md) to prepare the training and testing dataset.
 
 ### 2.2 Train
 We train the ML-MemAE-SC at first, then train CVAE model with the reconstructed flows,
