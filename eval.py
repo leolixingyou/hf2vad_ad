@@ -15,6 +15,7 @@ from datasets.dataset import Chunked_sample_dataset, get_dataset
 from utils.eval_utils import load_and_resize_gt_images, load_and_resize_gt_images_with_generated_bboxes, robust_scale, save_aupr_fpr_curve, save_evaluation_curves, save_flow_images, save_frame_plots
 import os
 
+
 METADATA = {
  "carla_local": {
         "testing_video_num": 13,
