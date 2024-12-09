@@ -1,6 +1,8 @@
 ## HF2-VAD-AD
 Official implementation of "Hybrid Video Anomaly Detection for Anomalous Scenarios in Autonomous Driving".
 
+paper(https://arxiv.org/pdf/2406.06423)
+
 ![pipeline](./assets/Anomaly_Process_Detection.png)
 ## 1. Dependencies
 ```
