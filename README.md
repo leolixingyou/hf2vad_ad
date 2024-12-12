@@ -3,10 +3,11 @@ Official implementation of "Hybrid Video Anomaly Detection for Anomalous Scenari
 
 docker hub(https://hub.docker.com/repository/docker/leolixingyou/hf2_vad_ad_test/general)
 ```bash
-$ docker push leolixingyou/hf2_vad_ad_test:finish
+$ docker pull leolixingyou/hf2_vad_ad_test:finish
+$ cd docker/
+$ ./run_container_w_gpu.sh
 ```
-
-
+Run the code mentioned below.
 
 paper(https://arxiv.org/pdf/2406.06423)
 
