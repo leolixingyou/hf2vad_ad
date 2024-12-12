@@ -13,8 +13,9 @@ Run the code mentioned below.
 
 paper(https://arxiv.org/pdf/2406.06423)
 
+All results, figures, and demo videos in the [results](https://github.com/leolixingyou/hf2vad_ad/results) folder.
 
-
+## From Original Project
 
 ![pipeline](./assets/Anomaly_Process_Detection.png)
 ## 1. Dependencies
