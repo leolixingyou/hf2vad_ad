@@ -1,6 +1,8 @@
 ## HF2-VAD-AD
 Official implementation of "Hybrid Video Anomaly Detection for Anomalous Scenarios in Autonomous Driving".
 
+
+## One Semester Project Contents
 docker hub(https://hub.docker.com/repository/docker/leolixingyou/hf2_vad_ad_test/general)
 ```bash
 $ docker pull leolixingyou/hf2_vad_ad_test:finish
@@ -10,6 +12,9 @@ $ ./run_container_w_gpu.sh
 Run the code mentioned below.
 
 paper(https://arxiv.org/pdf/2406.06423)
+
+
+
 
 ![pipeline](./assets/Anomaly_Process_Detection.png)
 ## 1. Dependencies
