@@ -57,7 +57,7 @@ def extracting_flows(dataset, dataset_name, of_save_dir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--proj_root", type=str, default="Path", help='project root path')
+    parser.add_argument("--proj_root", type=str, default="/workspace/data/", help='project root path')
     parser.add_argument("--dataset_name", type=str, default="carla_local", help='dataset name')
     parser.add_argument("--mode", type=str, default="train", help='train or test data')
 

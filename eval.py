@@ -49,6 +49,26 @@ METADATA = {
 
 }
 
+def filter_common_keys(dict1, dict2):
+    """
+    比较两个字典，只保留两边都存在的key对应的键值对
+    
+    参数:
+    dict1: 第一个字典
+    dict2: 第二个字典
+    
+    返回:
+    tuple: (处理后的dict1副本, 处理后的dict2副本)
+    """
+    # 找出共同的key
+    common_keys = set(dict1.keys()) & set(dict2.keys())
+    
+    # 创建新字典，只包含共同的key
+    filtered_dict1 = {k: dict1[k] for k in common_keys}
+    filtered_dict2 = {k: dict2[k] for k in common_keys}
+    
+    return filtered_dict1, filtered_dict2
+
 
 def evaluate(config, ckpt_path, testing_chunked_samples_file, training_stats_path, suffix):
     dataset_name = config["dataset_name"]
@@ -209,6 +229,13 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, training_stats_pat
         if key not in pixel_scores:
             pixel_scores[key] = 0
 
+    ## xingyou
+    # keys compansation
+    print('Post Processing...')
+    pixel_scores, pixel_gt_dict= filter_common_keys(pixel_scores, pixel_gt_dict)
+    print('Finished: Post Processing')
+    ## xingyou
+
     assert set(pixel_scores.keys()) == set(pixel_gt_dict.keys()), "Error with the keys"
 
     for key in pixel_scores.keys():
@@ -240,7 +267,7 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, training_stats_pat
     # )
 
     # ================== Calculate AUC ==============================
-    with open("/data/carla_local/ground_truth_demo/gt_label.json", "r") as file:
+    with open("/workspace/data/carla_local/ground_truth_demo/gt_label.json", "r") as file:
         gt = json.load(file)
     gt_concat = np.concatenate(list(gt.values()), axis=0)
 
@@ -271,10 +298,10 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, training_stats_pat
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_save_path", type=str,
-                        default="Model_Path",
+                        default="/workspace/ckpt/carla_local_ML_MemAE_SC_f4l16/best.pth",
                         help='path to pretrained weights')
     parser.add_argument("--cfg_file", type=str,
-                        default="cfgs/finetune_cfg.yaml",
+                        default="/workspace/cfgs/finetune_cfg.yaml",
                         help='path to pretrained model configs')
     args = parser.parse_args()
 

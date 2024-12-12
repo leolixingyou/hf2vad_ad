@@ -26,7 +26,8 @@ log_root: log
 eval_root: eval
 
 ML_MemAE_SC_pretrained: False
-pretrained: ./ckpt/ped2_ML_MemAE_SC_CVAE/best.pth
+# pretrained: ./ckpt/ped2_ML_MemAE_SC_CVAE/best.pth
+pretrained: ./ckpt/ped2_HF2VAD_99.31.pth
 model_savename: model.pth
 # num of iterations to log
 logevery: 100

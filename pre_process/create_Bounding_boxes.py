@@ -58,11 +58,12 @@ def process_directory_with_roboflow(directory, model_id):
             image_bboxes_list.append(bboxes)  
     return image_bboxes_list
 
-root_dir = 'root_dir'
+root_dir = '/workspace/data/carla_local/testing/frames/'
 
 model_id = "carla-f4l16/1"
 
-npy_output_path = 'carla_test_bboxes.npy'
+# npy_output_path = 'carla_test_bboxes.npy'
+npy_output_path = 'carla_train_bboxes.npy'
 
 all_bboxes = []
 for scenario in tqdm(sorted(os.listdir(root_dir)), desc="Processing scenarios", leave=False):
@@ -73,4 +74,5 @@ for scenario in tqdm(sorted(os.listdir(root_dir)), desc="Processing scenarios", 
         all_bboxes.extend(image_bboxes_list)
 
 all_bboxes_array = np.array(all_bboxes, dtype=object)
+
 np.save(npy_output_path, all_bboxes_array, allow_pickle=True)

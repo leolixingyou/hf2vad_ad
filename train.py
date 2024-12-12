@@ -24,6 +24,7 @@ def train(config, training_chunked_samples_dir, testing_chunked_samples_file):
     paths = dict(log_dir="%s/%s" % (config["log_root"], config["exp_name"]),
                  ckpt_dir="%s/%s" % (config["ckpt_root"], config["exp_name"]))
 
+
     os.makedirs(paths["ckpt_dir"], exist_ok=True)
 
     batch_size = config["batchsize"]
@@ -48,6 +49,7 @@ def train(config, training_chunked_samples_dir, testing_chunked_samples_file):
                   mem_usage=config["model_paras"]["mem_usage"],
                   skip_ops=config["model_paras"]["skip_ops"],
                   ).to(device)
+    
 
     # load ML_MemAE_SC weights and fix them
     ML_MemAE_SC_state_dict = torch.load(config["ML_MemAE_SC_pretrained"])["model_state_dict"]
@@ -227,7 +229,7 @@ def cal_training_stats(config, ckpt_path, training_chunked_samples_dir, stats_sa
 
 
 if __name__ == '__main__':
-    config = yaml.safe_load(open("./cfgs/cfg.yaml"))
+    config = yaml.safe_load(open("/workspace/cfgs/cfg.yaml"))
     dataset_name = config["dataset_name"]
     dataset_base_dir = config["dataset_base_dir"]
     training_chunked_samples_dir = os.path.join(dataset_base_dir, dataset_name, "training/chunked_samples")

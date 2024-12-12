@@ -427,11 +427,13 @@ class CarlaDataset(common_dataset):
 
             if not self.of_dataset and self.mode =='test':
                 
-                self.data_dir = 'Path_To_Data'
+                # self.data_dir = 'Path_To_Data'
+                self.data_dir = '/workspace/data/carla_local/testing/'
 
                 data_path = os.path.join(self.data_dir)
                     
-                video_dir_list = sorted([dir for dir in glob.glob(os.path.join(data_path, '00*'))])                
+                video_dir_list = sorted([dir for dir in glob.glob(os.path.join(data_path, '000*'))])                
+                # video_dir_list = [os.path.join(data_path, '0001')]         
                 gt_dir_list = [os.path.join(video_dir, 'ground-truth') for video_dir in video_dir_list]
                 
                 idx = 1

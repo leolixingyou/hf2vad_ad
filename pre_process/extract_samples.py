@@ -1,7 +1,7 @@
 import argparse
 import os
 import numpy as np
-import joblib
+# import joblib
 from datasets.dataset import get_dataset, img_batch_tensor2numpy
 
 
@@ -74,7 +74,7 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
                     chunked_samples["motion"] = np.array(chunked_samples["motion"])
                     chunked_samples["bbox"] = np.array(chunked_samples["bbox"])
                     chunked_samples["pred_frame"] = np.array(chunked_samples["pred_frame"])
-                    joblib.dump(chunked_samples, os.path.join(save_dir, "chunked_samples_%02d.pkl" % chunk_id))
+                    # joblib.dump(chunked_samples, os.path.join(save_dir, "chunked_samples_%02d.pkl" % chunk_id))
                     print("Chunk %d file saved!" % chunk_id)
 
                     chunk_id += 1
@@ -89,7 +89,7 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
         chunked_samples["motion"] = np.array(chunked_samples["motion"])
         chunked_samples["bbox"] = np.array(chunked_samples["bbox"])
         chunked_samples["pred_frame"] = np.array(chunked_samples["pred_frame"])
-        joblib.dump(chunked_samples, os.path.join(save_dir, "chunked_samples_%02d.pkl" % chunk_id))
+        # joblib.dump(chunked_samples, os.path.join(save_dir, "chunked_samples_%02d.pkl" % chunk_id))
         print("Chunk %d file saved!" % chunk_id)
 
     print('All samples have been saved!')
@@ -97,7 +97,7 @@ def samples_extraction(dataset_root, dataset_name, mode, all_bboxes, save_dir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--proj_root", type=str, default="Path", help='project root path')
+    parser.add_argument("--proj_root", type=str, default="/workspace/", help='project root path')
     parser.add_argument("--dataset_name", type=str, default="carla_local", help='dataset name')
     parser.add_argument("--mode", type=str, default="test", help='train or test data')
 
@@ -105,13 +105,13 @@ if __name__ == '__main__':
 
 
 
-    all_bboxes = np.load('data/carla_local/bounding_boxes/carla_final_test_bboxes.npy', allow_pickle=True)
+    all_bboxes = np.load('/workspace/data/carla_local/bounding_boxes/carla_final_test_bboxes.npy', allow_pickle=True)
 
     if args.mode == "train":
         save_dir = os.path.join(args.proj_root, "data", args.dataset_name, "training", "chunked_samples")
     else:
         save_dir = os.path.join(args.proj_root, "data", args.dataset_name, "testing", "chunked_samples")
-
+    print(f'output dir is {save_dir}')
     samples_extraction(
         dataset_root=os.path.join(args.proj_root, "data"),
         dataset_name=args.dataset_name,

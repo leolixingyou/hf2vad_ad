@@ -26,10 +26,11 @@ logevery: 100
 saveevery: 1
 
 # training setting
-num_epochs: 80
-batchsize: 256
+num_epochs: 150
+# num_epochs: 80
+batchsize: 16 #256
 lr: 0.0001
-num_workers: 8
+num_workers: 4 #default is 8
 lam_sparse: 0.0002
 lam_recon: 1.0
 

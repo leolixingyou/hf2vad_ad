@@ -44,8 +44,8 @@ def save_aupr_fpr_curve(scores, labels, curves_save_path):
         json.dump(kde_data, f)
 
     plt.figure(figsize=(10, 6))
-    sns.kdeplot(scores_label_1, shade=True, label='Label 1')
-    sns.kdeplot(scores_label_0, shade=True, label='Label 0')
+    sns.kdeplot(scores_label_1, shade=True, label='Label 1',fill=True)
+    sns.kdeplot(scores_label_0, shade=True, label='Label 0',fill=True)
     plt.xlabel('Scores')
     plt.ylabel('Density')
     plt.title('KDE of Scores')
@@ -282,7 +282,7 @@ def load_and_resize_gt_images_with_generated_bboxes(gt_paths, target_size, cache
         
     return pixel_gt_dict
 
-def load_and_resize_gt_images(gt_paths, target_size, cache_path='data/carla_local/pixel_gt/pixel_gt_dict.pickle'):
+def load_and_resize_gt_images(gt_paths, target_size, cache_path='/workspace/data/carla_local/pixel_gt/pixel_gt_dict.pickle'):
     if os.path.exists(cache_path):
         print("Loading from cache.")
         with open(cache_path, 'rb') as cache_file:

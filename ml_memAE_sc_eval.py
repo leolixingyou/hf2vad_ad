@@ -91,7 +91,6 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
             flattened_bboxes.append(bbox)
             
     frame_bbox_scores = [{} for i in range(testset_num_frames.item())]
-    print(dataset.all_gt_addr)
     pixel_gt_dict = load_and_resize_gt_images(dataset.all_gt_addr, target_size)
     pixel_scores = {}
 
@@ -111,7 +110,8 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
             for y in range(target_size[1]):  
                 for x in range(target_size[0]):
                     pixel_key = (frame_number_scalar, y, x)
-                    pixel_scores[pixel_key] = 0
+                    if pixel_key not in pixel_gt_dict.keys():
+                        pixel_scores[pixel_key] = 0
             
         for bb_idx, frame_number in enumerate(pred_frame_test.numpy()):
             frame_number_scalar = frame_number.item()
@@ -158,6 +158,15 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
         if key not in pixel_scores:
             pixel_scores[key] = 0
 
+    ## xingyou
+    # keys compansation
+    extra_keys = set(pixel_scores.keys()) - set(pixel_gt_dict.keys())
+    for key in extra_keys:
+        del pixel_scores[key]
+
+    print(set(pixel_scores.keys()) == set(pixel_gt_dict.keys()))
+    ## xingyou
+
     assert set(pixel_scores.keys()) == set(pixel_gt_dict.keys()), "Error with the keys"
 
     # pixel wise anomaly score
@@ -194,7 +203,7 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
     # load gt labels
     #gt = pickle.load(
      #   open(os.path.join(config["dataset_base_dir"], "%s/ground_truth_demo/gt_label.json" % dataset_name), "rb"))
-    with open("/data/carla_local/ground_truth_demo/gt_label.json", "r") as file:
+    with open("/workspace/data/carla_local/ground_truth_demo/gt_label.json", "r") as file:
         gt = json.load(file)
     gt_concat = np.concatenate(list(gt.values()), axis=0)
 
@@ -224,14 +233,14 @@ def evaluate(config, ckpt_path, testing_chunked_samples_file, suffix):
 
 
 if __name__ == '__main__':
-    model_save_path = "Model_Path"
+    model_save_path = "ckpt/carla_local/model.pth-1"
     cfg_file = "cfgs/ml_memAE_sc_cfg.yaml"
 
     config = yaml.safe_load(open(cfg_file))
     dataset_base_dir = config["dataset_base_dir"]
     dataset_name = config["dataset_name"]
 
-    testing_chunked_samples_file = os.path.joitestset_num_framestestset_num_framestestset_num_framesn("./data", config["dataset_name"],
+    testing_chunked_samples_file = os.path.join("./data", config["dataset_name"],
                                                 "testing/chunked_samples/chunked_samples_00.pkl")
     
 

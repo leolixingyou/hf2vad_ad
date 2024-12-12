@@ -2,6 +2,9 @@ import torch.nn as nn
 import yaml
 import shutil
 from tqdm import tqdm
+from time import localtime, strftime
+
+import time
 import os
 import torch
 from torch.utils.data import DataLoader
@@ -133,8 +136,11 @@ def train(config, training_chunked_samples_dir, testing_chunked_samples_file):
                 writer.add_scalar("auc", auc, global_step=epoch + 1)
 
     print("================ Best AUC %.4f ================" % best_auc)
-
-
+    t_local = localtime(time.time())
+    time_format = '%Y-%m-%d %H:%M:%S'
+    time_str = strftime(time_format,t_local)
+    print(time_str)
+    
 if __name__ == '__main__':
     config = yaml.safe_load(open("./cfgs/ml_memAE_sc_cfg.yaml"))
 

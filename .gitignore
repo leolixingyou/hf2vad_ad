@@ -19,8 +19,14 @@ pre_process/flownet_networks/resample2d_package/dist
 
 pretrained_ckpts/
 
+data/
 ckpt/
 log/
 eval/
+results/
 
 presentation
+
+*.zip
+*.pth
+.gou*
