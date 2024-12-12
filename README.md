@@ -9,11 +9,14 @@ $ docker pull leolixingyou/hf2_vad_ad_test:finish
 $ cd docker/
 $ ./run_container_w_gpu.sh
 ```
+
+Prepare data downlaod here [data/ckpt](https://drive.google.com/drive/folders/198S68h8G4KLKqTgnKdekEk_3HrrN1DRx?usp=sharing) in root folder as data and ckpt folder config.
+
 Run the code mentioned below.
 
-paper(https://arxiv.org/pdf/2406.06423)
-
 All results, figures, and demo videos in the [results](https://github.com/leolixingyou/hf2vad_ad/tree/master/results) folder.
+
+paper(https://arxiv.org/pdf/2406.06423)
 
 ## From Original Project
 
