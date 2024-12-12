@@ -13,7 +13,7 @@ Run the code mentioned below.
 
 paper(https://arxiv.org/pdf/2406.06423)
 
-All results, figures, and demo videos in the [results](https://github.com/leolixingyou/hf2vad_ad/results) folder.
+All results, figures, and demo videos in the [results](https://github.com/leolixingyou/hf2vad_ad/tree/master/results) folder.
 
 ## From Original Project
 
