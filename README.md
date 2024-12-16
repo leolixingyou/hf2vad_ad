@@ -10,7 +10,10 @@ $ cd docker/
 $ ./run_container_w_gpu.sh
 ```
 
-Prepare data downlaod here [data/ckpt](https://drive.google.com/drive/folders/198S68h8G4KLKqTgnKdekEk_3HrrN1DRx?usp=sharing) in root folder as data and ckpt folder config.
+Prepare data to download here [data/ckpt](https://drive.google.com/drive/folders/198S68h8G4KLKqTgnKdekEk_3HrrN1DRx?usp=sharing) in root folder as data and ckpt folder config.
+
+and the zip file named 'hf2vad_ad' is the full project file.
+
 
 Run the code mentioned below.
 
